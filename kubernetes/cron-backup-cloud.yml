@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cloud-backup-cronjob
+  namespace: stud-for-stud-production
+spec:
+  schedule: "0 10 * * 0" # At 10:00 on Sunday
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            kubernetes.io/hostname: yechezkeserver 
+          containers:
+            - name: stud-for-stud-frontend
+              image: harbor.chay-techs.com/studforstud/studforstud-app:1.3.0
+              command: ["python", "cloud-backup.py"]
+              volumeMounts:
+              - name: nfs-backup-volume
+                mountPath: /backup
+              ports:
+                - containerPort: 5000
+              env:
+                - name: BASE_DIR
+                  value: "/nfs"
+                - name: BACKUP_CLOUD_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-username-password-secrets
+                      key: backup-cloud-username-key
+                - name: BACKUP_CLOUD_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-username-password-secrets
+                      key: backup-cloud-password-key
+                - name: BACKUP_DIR
+                  value: "/backup"
+          imagePullSecrets:
+            - name: stud-for-stud-registry-key
+          volumes:
+          - name: nfs-backup-volume
+            hostPath:
+              path: "/home/yechezke/projects/volumes"
+          restartPolicy: OnFailure

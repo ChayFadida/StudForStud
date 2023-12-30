@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stud-for-stud-frontend-service
+  namespace: stud-for-stud-production
+  labels:
+    app: stud-for-stud-frontend
+    environment: production
+spec:
+  selector:
+    app: stud-for-stud-frontend
+  ports:
+    - protocol: TCP
+      port: 443
+      targetPort: 5000
+  type: ClusterIP

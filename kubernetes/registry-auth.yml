@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: stud-for-stud-registry-key
+  namespace: stud-for-stud-production
+data:
+  .dockerconfigjson: <PLACEHOLDER_SECRET>
+type: kubernetes.io/dockerconfigjson

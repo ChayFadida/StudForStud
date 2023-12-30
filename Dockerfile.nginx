@@ -1,0 +1,6 @@
+FROM nginx:stable-alpine
+
+
+COPY ./nginx/conf.d /etc/nginx/conf.d
+
+RUN apk update && apk upgrade

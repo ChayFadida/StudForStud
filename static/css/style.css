@@ -1,0 +1,166 @@
+@media (max-width: 768px) {
+    .table thead th {
+        font-size: 14px;
+    }
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+th, td {
+    white-space: nowrap;
+}
+div.dataTables_wrapper {
+    width: 90%;
+    margin: 0 auto;
+    overflow-x: auto;
+}
+/* Header background color and text color with animation */
+
+.table thead th {
+    background-color: #3498db;
+    color: #fff;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+/* Hover effect for table rows */
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+    transition: background-color 0.3s;
+}
+
+/* Table border and cell padding */
+.table {
+    border: 2px solid #3498db;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.5s;
+}
+
+/* Footer background color and text color with animation */
+.table tfoot th {
+    background-color: #3498db;
+    color: #fff;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+/* Custom title styling with animation */
+h1 {
+    color: #3498db;
+    text-align: center;
+    font-size: 33px;
+    margin-bottom: 20px;
+    animation: fadeIn 1s;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* Add some padding to the body */
+body {
+    padding: 20px;
+}
+
+/* Style for the file upload button and area */
+.file-upload {
+    display: none;
+}
+
+.file-upload-label {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.file-upload-label:hover {
+    background-color: #2980b9; /* Adjusted color for hover */
+}
+
+.file-upload-input {
+    display: none;
+}
+
+.file-upload-drag {
+    border: 2px dashed #3498db;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.file-upload-drag:hover {
+    border: 2px dashed #2980b9; /* Adjusted color for hover */
+}
+
+.file-upload-drag:hover {
+    border: 2px dashed #3498db;
+}
+
+
+body {
+    direction: rtl;
+}
+
+h1,
+div.info,
+ul.tabs,
+div.tabs,
+div.footer {
+    direction: ltr;
+}
+
+/* Ensure that the demo table scrolls */
+th, td { white-space: nowrap; }
+
+.welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+
+.upload-link {
+    color: #3498db;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.upload-link:hover {
+    color: #3498db;
+}
+
+/* Hide the form by default */
+.upload-form {
+    display: none;
+}
+       /* Limit maximum width on larger screens */
+.container {
+    max-width: 900px; /* Adjust as needed */
+}
+.modal-header .btn-close {
+    font-size: 1rem; /* Adjust the font size as needed */
+    padding: 0.8rem 0.8rem; /* Adjust the padding as needed */
+}
+div.dataTables_wrapper input[type="search"] {
+    text-align: right;
+}
+
+.dataTables_filter {
+    width: 30%;
+    float: left;
+    text-align: right;
+}

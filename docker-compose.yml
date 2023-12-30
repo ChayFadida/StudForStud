@@ -1,0 +1,14 @@
+version: '3'
+services:
+  web:
+    image: harbor.chay-techs.com/studforstud/studforstud_web:latest
+    restart: always
+    volumes:
+      - ${TEST_FILE_LOCATION}:${BASE_DIR}
+    environment:
+      - BASE_DIR=${BASE_DIR}
+
+  nginx:
+    image: harbor.chay-techs.com/studforstud/studforstud_nginx:latest
+    ports:
+      - "8081:8080"

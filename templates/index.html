@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Add viewport meta tag for responsive design -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+    <!-- Include Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <!-- Bootstrap JavaScript (including modal script) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='pictures/favicon.ico') }}">
+    <!-- Include your custom style.css -->
+    <link rel="stylesheet" href="../static/css/style.css">
+    <title>StudForStud</title>
+    
+    <!-- Custom CSS for styling -->
+    <!-- Custom CSS for styling and animations -->
+</head>
+
+<body>
+    <script> 
+    $(document).ready(function() {
+        $('#datatable').DataTable({
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/he.json'
+            },
+            fixedColumns: {
+                left: 1,
+                right: 1
+            },
+            paging: true,
+            scrollCollapse: true,
+            scrollX: true,
+            bInfo : false
+        });
+    });
+    $(document).ready(function () {
+        // Add a click event listener to all "Open Form" buttons
+        $('.open-form-btn').on('click', function () {
+            // Show the corresponding modal form
+            $('#formModal').modal('show');
+            
+            // Populate the form fields with the values from the clicked row
+            var row = $(this).closest('tr');
+            $('#edit-semester').val(row.data('semester'));
+            $('#edit-exam_type').val(row.data('exam-type'));
+            $('#edit-grade').val(row.data('grade'));
+            $('#edit-course_code').val(row.data('course-code'));
+            $('#edit-lecturer').val(row.data('lecturer'));
+            $('#edit-notes').val(row.data('notes'));
+            $('#hidden-file-name').val(row.data('file-name'));
+        });
+    });
+    $(document).ready(function() {
+        // Add an event listener to the file input element
+        const fileInput = $("#file-upload");
+        const fileInputLabel = $(".file-upload-label");
+
+        fileInput.change(function () {
+            if (fileInput[0].files.length > 0) {
+                // A file has been selected, update the label text
+                fileInputLabel.text(`קובץ נבחר`);
+            } else {
+                // No file selected, revert to the original label text
+                fileInputLabel.text("בחר קובץ");
+            }
+        });
+    });
+    </script>
+    <script src="../static/js/index_script.js"></script>
+    <div class="container">
+        <div style="text-align: center;">
+            <img src="{{ url_for('static', filename='pictures/logo.png') }}"  alt="Your Logo" width="200" height="200" style="display: block; margin: 0 auto;">
+        </div>
+        <!-- Welcome Section -->
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <h1>המכללה להנדסה בראודה - סריקות מבחנים</h1>
+                <p>על מנת להעלות סריקה חדשה <a href="#uploadModal" class="blue-link" data-bs-toggle="modal">לחץ כאן</a></p>
+                <!-- Upload File Link to Open Modal -->
+            </div>
+        </div>
+        
+        <!-- Modal for File Upload Form -->
+        <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-start" id="uploadModalLabel">העלאת סריקה</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; top: 0; left: 0;"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- File Upload Form -->
+                        <form action="/upload" method="POST" enctype="multipart/form-data" onsubmit="return validateUploadForm()">
+                            <!-- Input fields for additional information -->
+                            <div class="mb-3">
+                                <label for="semester" class="form-label text-end">סמסטר:</label>
+                                <select id="semester" name="semester" required class="form-select">
+                                    {% for item in data['exam_dates'] %}
+                                        <option value="{{ item }}">{{ item }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="exam_type" class="form-label text-end">מועד:</label>
+                                <select id="exam_type" name="exam_type" required class="form-select">
+                                    <option value="A">א</option>
+                                    <option value="B">ב</option>
+                                    <option value="C">ג</option>
+                                    <option value="Middle">אמצע</option>
+                                </select>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="grade" class="form-label text-end">ציון:</label>
+                                <input type="text" id="grade" name="grade" required class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="course_code" class="form-label text-end">מספר קורס:</label>
+                                <input type="text" id="course_code" name="course_code" required class="form-control">
+                            </div>
+
+                            
+                            <div class="mb-3">
+                                <label for="lecturer" class="form-label text-end">מרצה:</label>
+                                <input type="text" id="lecturer" name="lecturer"  class="form-control">
+                            </div>
+        
+                            
+                            <div class="mb-3">
+                                <label for="notes" class="form-label text-end">הערות:</label>
+                                <input type="text" id="notes" name="notes"  class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="file-upload" class="file-upload-label text-end">בחר קובץ</label>
+                                <input type="file" id="file-upload" name="file-upload" class="file-upload-input text-start" required accept=".pdf">
+                            </div>                            
+        
+                            <div class="text-center mb-3">
+                                <input type="submit" value="העלה מבחן" class="btn btn-primary" style="background-color: #3498db; border-color: #3498db;">
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-start" id="formModalLabel">עריכת סריקה</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; top: 0; left: 0;"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Edit Form -->
+                        <form action="/edit" method="POST" enctype="multipart/form-data" onsubmit="return validateEditForm()">
+                            <!-- Input fields for editing -->
+                            <div class="mb-3">
+                                <label for="edit-semester" class="form-label text-end">סמסטר:</label>
+                                <select id="edit-semester" name="semester" required class="form-select">
+                                    {% for item in data['exam_dates'] %}
+                                        <option value="{{ item }}">{{ item }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="edit-exam_type" class="form-label text-end">מועד:</label>
+                                <select id="edit-exam_type" name="exam_type" required class="form-select">
+                                    <option value="A">א</option>
+                                    <option value="B">ב</option>
+                                    <option value="C">ג</option>
+                                    <option value="Middle">אמצע</option>
+                                </select>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="edit-grade" class="form-label text-end">ציון:</label>
+                                <input type="text" id="edit-grade" name="grade" required class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="edit-course_code" class="form-label text-end">מספר קורס:</label>
+                                <input type="text" id="edit-course_code" name="course_code" required class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="edit-lecturer" class="form-label text-end">מרצה:</label>
+                                <input type="text" id="edit-lecturer" name="lecturer" class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label for="edit-notes" class="form-label text-end">הערות:</label>
+                                <input type="text" id="edit-notes" name="notes" class="form-control">
+                            </div>
+                            <input type="hidden" id="hidden-file-name" name="hidden-file-name">
+                            <!-- Buttons for saving or canceling the edit -->
+                            <div class="text-center mb-3">
+                                <button type="submit" class="btn btn-primary" style="background-color: #3498db; border-color: #3498db;">שמור</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ביטול</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table id="datatable" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th style="text-align: right;">מחברת</th>
+                    <th style="text-align: right;">מספר קורס</th>
+                    <th style="text-align: right;">ציון</th>
+                    <th style="text-align: right;">סמסטר</th>
+                    <th style="text-align: right;">מועד</th>
+                    <th style="text-align: right;">מרצה</th>
+                    <th style="text-align: right;">הערות</th>
+                    <th style="text-align: right;">עריכה</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in data['table_data'] %}
+                <tr data-semester="{{ item['/semester'] }}" data-exam-type="{{ data['moed_dict'][item['/exam_type']] }}" data-grade="{{ item['/grade'] }}" data-course-code="{{ item['/course_code'] }}" data-lecturer="{{ item['/lecturer'] }}" data-notes="{{ item['/notes'] }}" data-file-name="{{ item['/file_name'] }}">
+                    <td><a href="{{ item['/download_link'] }}" target="_blank">לצפייה בסריקה</a></td>
+                    <td>{{ item['/course_code'] }} {{ item['/course_name'] }}</td>
+                    <td>{{ item['/grade'] }}</td>
+                    <td>{{ item['/semester'] }}</td>
+                    <td>{{ item['/exam_type'] }}</td>
+                    <td>{{ item['/lecturer'] }}</td>
+                    <td>{{ item['/notes'] }}</td>
+                    <td><button class="btn btn-primary btn-sm open-form-btn" style="background-color: #3498db; border-color: #3498db;">עריכת סריקה</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th style="text-align: right;">מחברת</th>
+                    <th style="text-align: right;">מספר קורס</th>
+                    <th style="text-align: right;">ציון</th>
+                    <th style="text-align: right;">סמסטר</th>
+                    <th style="text-align: right;">מועד</th>
+                    <th style="text-align: right;">מרצה</th>
+                    <th style="text-align: right;">הערות</th>
+                    <th style="text-align: right;">עריכה</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <footer>
+        <p style="text-align: center; direction: rtl; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+            אתר זה נבנה על ידי <a href="https://chay-techs.com/" class="blue-link">חי פדידה</a>
+        </p>
+    </footer>
+    <footer>
+        <p style="text-align: center; direction: rtl; font-family: Arial, sans-serif; font-size: 12px; color: #666;">אתר זה איננו קשור למכללה האקדמית להנדסה בראודה, ואין לראות במכללה או מי מטעמו כאחראי לעיצובו של האתר ולתכניו.</p>
+    </footer>
+</body>
+</html>

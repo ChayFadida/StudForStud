@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nfs-backup-cronjob
+  namespace: stud-for-stud-production
+spec:
+  schedule: "0 0 * * *" # Every 24 Hours At 12:00am
+  successfulJobsHistoryLimit: 3  # Keep track of successful jobs (adjust as needed)
+  failedJobsHistoryLimit: 1      # Keep track of failed jobs (adjust as needed)
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            kubernetes.io/hostname: yechezkeserver
+          containers:
+          - name: backup-test
+            image: busybox:1.28
+            imagePullPolicy: IfNotPresent
+            volumeMounts:
+            - name: nfs-backup-volume
+              mountPath: /backup
+            - name: test-path
+              mountPath: /k8sdata/studforstud
+            command:
+            - /bin/sh
+            - -c
+            - tar -czvf /backup/backup_$(date +\%Y\%m\%d_\%H\%M).tar.gz -C /k8sdata/studforstud .
+          volumes:
+          - name: nfs-backup-volume
+            hostPath:
+              path: "/home/yechezke/projects/volumes"
+          - name: test-path
+            hostPath:
+              path: "/k8sdata/studforstud"
+          restartPolicy: Never
