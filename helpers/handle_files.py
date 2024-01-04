@@ -1,4 +1,4 @@
-import os
+import os, uuid
 from config.bradue_conf import season_dict, moded_dict, get_course_name, generate_years_array
 from werkzeug.utils import secure_filename
 
@@ -28,10 +28,11 @@ class HandleData:
         Returns:
             None
         """
-        file_name = self.generate_file_name(course_code, semester, grade)
+        id = str(uuid.uuid4())
+        file_name = self.generate_file_name(course_code, semester, grade, id)
         file_name = secure_filename(file_name)
 
-        metadata = self.generate_json_metadata(course_code, semester, grade, notes, lecturer, exam_type, file_name)
+        metadata = self.generate_json_metadata(course_code, semester, grade, notes, lecturer, exam_type, file_name, id)
 
         # Temporarily save the file content to a local file
         temp_file_path = os.path.join('temp', file_name)
@@ -44,7 +45,7 @@ class HandleData:
 
     
 
-    def generate_file_name(self, course_code: str, semester: str, grade: str) -> str:
+    def generate_file_name(self, course_code: str, semester: str, grade: str, id: str) -> str:
         """
         Generate a unique file name based on course, semester, and grade.
 
@@ -59,9 +60,10 @@ class HandleData:
         semester_info = semester.split(' ')
         year = semester_info[0]
         semester_part = season_dict[semester_info[1]]
-        return f"{course_code}_{year}_{semester_part}_{grade}.pdf"
+        return f"{course_code}_{year}_{semester_part}_{grade}_{id}.pdf"
     
-    def generate_json_metadata(self, course_code: str, semester: str, grade: str, notes: str, lecturer: str, exam_type: str, file_name: str) -> dict:
+    def generate_json_metadata(self, course_code: str, semester: str, grade: str, notes: str, lecturer: str, exam_type: str, file_name: str,
+                               id: str) -> dict:
         """
         Generate metadata in JSON format for a test file.
 
@@ -85,7 +87,8 @@ class HandleData:
             "/lecturer": lecturer,
             "/notes": notes,
             "/file_name": file_name,
-            "/download_link": f"/files/{file_name}"
+            "/download_link": f"/files/{file_name}",
+            "/id": id
         }
         return data
 
@@ -124,9 +127,9 @@ class HandleData:
                 original_file_path = os.path.join(root, file_name)
         current_metadata = self.file_client.get_metadata_from_file(original_file_path)
         if current_metadata['/course_code'] != course_code or current_metadata['/semester'] != semester or  current_metadata['/grade'] != grade:
-            file_name = self.generate_file_name(course_code, semester, grade)
+            file_name = self.generate_file_name(course_code, semester, grade, current_metadata['/id'])
         self.file_client.change_file_name(original_file_path, file_name)
-        metadata = self.generate_json_metadata(course_code, semester, grade, notes, lecturer, exam_type, file_name)
+        metadata = self.generate_json_metadata(course_code, semester, grade, notes, lecturer, exam_type, file_name, current_metadata['/id'])
         self.file_client.change_metadata_by_name(file_name, metadata)
         return None
         

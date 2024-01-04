@@ -64,7 +64,6 @@ $(document).ready(function() {
         bInfo : false
     });
 });
-
 // Form validation function
 function validateUploadForm() {
     var lecturerInput = document.getElementById("lecturer").value;
