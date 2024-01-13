@@ -9,6 +9,7 @@ seasons = ['summer', 'winter', 'spring']
 metrics = {season: Gauge(f'total_{season}_tests', f'Total number of {season} tests') for season in seasons}
 files_with_year = {year: Gauge(f'number_tests_in_{year}', f'Number of tests in "{year}"') for year in range(2000, datetime.now().year + 1)}
 files_served = Counter('files_served', 'Total number of files served through the route')
+serves_per_file = Gauge('serves_per_file', 'Number of times each file is served', ['filename'])
 
 def initialize_metrics():
     total_test_metric()
