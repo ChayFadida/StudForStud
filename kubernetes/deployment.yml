@@ -16,7 +16,6 @@ spec:
       labels:
         app: stud-for-stud-frontend
         environment: production
-        #operated-prometheus: "true"
     spec:
       securityContext:
         runAsUser: 1000
