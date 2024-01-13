@@ -1,13 +1,14 @@
 import os
 from datetime import datetime
 from config.app_contex import base_dir
-from prometheus_client import Gauge
+from prometheus_client import Gauge, Counter
 
 # Metrics definition
 total_tests = Gauge('total_test', 'Total number of tests')
 seasons = ['summer', 'winter', 'spring']
 metrics = {season: Gauge(f'total_{season}_tests', f'Total number of {season} tests') for season in seasons}
 files_with_year = {year: Gauge(f'number_tests_in_{year}', f'Number of tests in "{year}"') for year in range(2000, datetime.now().year + 1)}
+files_served = Counter('files_served', 'Total number of files served through the route')
 
 def initialize_metrics():
     total_test_metric()
