@@ -4,8 +4,8 @@ FROM python:3.8-slim-buster
 # Set the working directory in the container
 WORKDIR /app
 
-# Create a directory called temp within the /app directory
-RUN mkdir temp
+# Create a directory called temp within the /app directory with appropriate permissions
+RUN mkdir -p temp && chown 1000:1000 temp
 
 # Copy the current directory contents into the container at /app
 COPY . /app
