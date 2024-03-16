@@ -11,7 +11,6 @@ class HandleData:
             file_client: An instance of a file client that interacts with file storage.
         """
         self.file_client = file_client
-        self.temp_dir = 'temp'
 
     def upload_test(self, file_content: bytes, course_code: str, semester: str, grade: str, notes: str, lecturer: str, exam_type: str) -> None:
         """
@@ -33,13 +32,9 @@ class HandleData:
         file_name = secure_filename(file_name)
 
         metadata = self.generate_json_metadata(course_code, semester, grade, notes, lecturer, exam_type, file_name)
-
-        # Dynamically create the temporary directory if it doesn't exist
-        if not os.path.exists(self.temp_dir):
-            os.makedirs(self.temp_dir)
         
         # Temporarily save the file content to a local file
-        temp_file_path = os.path.join(self.temp_dir, file_name)
+        temp_file_path = os.path.join('temp', file_name)
 
         with open(temp_file_path, 'wb') as temp_file:
             temp_file.write(file_content)
