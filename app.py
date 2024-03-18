@@ -5,7 +5,7 @@ from routes import edit, upload, serve_file, metrics
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from prometheus_client import make_wsgi_app
 from flask_prometheus_metrics import register_metrics
-
+from config.app_contex import app_version, app_environment
 app = Flask(__name__)
 
 # Add the following lines to configure the static folder
@@ -19,7 +19,7 @@ app.register_blueprint(upload.upload_bp)
 app.register_blueprint(serve_file.serve_file_bp)
 app.register_blueprint(metrics.metrics_bp)
 
-register_metrics(app, app_version="v0.1.2", app_config="staging")
+register_metrics(app, app_version=app_version, app_config=app_environment)
 
 @app.route('/')
 def index():
