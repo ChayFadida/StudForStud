@@ -2,6 +2,9 @@ from config.app_contex import data_handler
 from flask import Flask, render_template
 from werkzeug.middleware.proxy_fix import ProxyFix
 from routes import edit, upload, serve_file, metrics
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
+from prometheus_client import make_wsgi_app
+from flask_prometheus_metrics import register_metrics
 
 app = Flask(__name__)
 
@@ -16,6 +19,8 @@ app.register_blueprint(upload.upload_bp)
 app.register_blueprint(serve_file.serve_file_bp)
 app.register_blueprint(metrics.metrics_bp)
 
+register_metrics(app, app_version="v0.1.2", app_config="staging")
+
 @app.route('/')
 def index():
     """
@@ -29,5 +34,9 @@ def index():
     data = data_handler.get_data()
     return render_template('index.html', data=data)
 
+# Create a DispatcherMiddleware to combine your Flask app and the Prometheus metrics endpoint
+dispatcher = DispatcherMiddleware(app.wsgi_app, {"/metrics": make_wsgi_app()})
+
 if __name__ == '__main__':
-    app.run()
+    from werkzeug.serving import run_simple
+    run_simple(hostname="0.0.0.0", port=5000, application=dispatcher)

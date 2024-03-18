@@ -23,4 +23,4 @@ RUN pip install -r requirements.txt
 EXPOSE 5000
 
 # Run Gunicorn to start the Flask application
-CMD ["gunicorn", "-c", "gunicorn_config.py", "app:app"]
+CMD ["gunicorn", "-c", "gunicorn_config.py", "app:dispatcher"]
