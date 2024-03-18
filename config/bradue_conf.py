@@ -227,16 +227,9 @@ def get_course_dict():
 def generate_years_array():
     current_year = datetime.datetime.now().year
     years_array = []
-
     for year in range(2009, current_year + 1):
-        # Check if it's already past June of the current year
         current_date = datetime.datetime.now().date()
-        if year == current_year and current_date.month < 6:
-            continue
-
         years_array.append(f"{year} חורף")
-        if year < current_year or (year == current_year and current_date.month >= 6):
-            years_array.append(f"{year} אביב")
+        years_array.append(f"{year} אביב")
         years_array.append(f"{year} קיץ")
-    
     return years_array[::-1]  # Reverse the array
