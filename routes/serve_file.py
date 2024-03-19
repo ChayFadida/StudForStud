@@ -3,6 +3,7 @@ from config.app_contex import data_handler
 from werkzeug.utils import secure_filename
 from monitoring.metrics import files_served, serves_per_file
 import os
+from config.logger_config import log
 
 serve_file_bp = Blueprint('serve_file', __name__, url_prefix='/files')
 file_directory = data_handler.file_client.base_dir
@@ -26,6 +27,7 @@ def serve_file(filename):
         # Use Flask's send_from_directory to serve the file
         files_served.inc()
         serves_per_file.labels(filename).inc()
+        log.info(f"The following file served {filename}")
         return send_from_directory(file_directory, filename)
     else:
         return "File not found", 404

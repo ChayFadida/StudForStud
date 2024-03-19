@@ -1,5 +1,6 @@
 from flask import Blueprint, request, redirect
 from config.app_contex import data_handler
+from config.logger_config import log
 
 edit_bp = Blueprint('edit', __name__, url_prefix='/edit')
 
@@ -21,7 +22,8 @@ def edit_file():
         exam_type = request.form['exam_type'].strip()
         lecturer = request.form['lecturer'].strip()
         file_name = request.form['hidden-file-name'].strip()
-        data_handler.edit_data(semester, grade ,course_code ,notes ,exam_type ,lecturer ,file_name)
+        edited_file = data_handler.edit_data(semester, grade ,course_code ,notes ,exam_type ,lecturer ,file_name)
+        log.info(f"The file {edited_file} has been edited with the following inputs {[semester, grade ,course_code ,notes ,exam_type ,lecturer ,file_name]}")
         return redirect('/')
     except KeyError:
         return "Invalid form data", 400

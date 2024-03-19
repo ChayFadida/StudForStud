@@ -1,6 +1,7 @@
 from flask import Blueprint, request, redirect
 from config.app_contex import data_handler
 import magic
+from config.logger_config import log
 
 upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
 
@@ -23,10 +24,11 @@ def is_pdf_content(file_content):
         # Use python-magic to check the file's MIME type
         mime = magic.Magic()
         mime_type = mime.from_buffer(file_content)
+        log.debug(f"mime_type is {mime_type}")
         return 'pdf' in mime_type.lower()
     except Exception as e:
         # Handle exceptions (e.g., if python-magic is not installed or encounters an error)
-        print(f"Error checking PDF content: {e}")
+        log.error(f"Error checking PDF content: {e}")
         return False
 
 @upload_bp.route('/', methods=['POST'])
@@ -53,7 +55,8 @@ def upload_file():
         # Check if the file is a valid PDF
         if not is_pdf_content(file_content):
             return "Invalid file format. Please select a valid PDF file.", 400
-        data_handler.upload_test(file_content, course_code, semester, grade, notes, lecturer, exam_type)
+        file_name = data_handler.upload_test(file_content, course_code, semester, grade, notes, lecturer, exam_type)
+        log.info(f"New file uploaded with name {file_name}")
         return redirect('/')
     except KeyError:
         return "Invalid form data", 400

@@ -1,6 +1,7 @@
 import os
 from PyPDF2 import PdfReader, PdfWriter
 import shutil
+from config.logger_config import log
 
 class LocalClient:
     def __init__(self, base_dir='/nfs/studforstud'):
@@ -63,7 +64,7 @@ class LocalClient:
         with open(output_file_path, 'wb') as pdf_output:
             pdf_writer.write(pdf_output)
 
-        print(f"PDF file with metadata saved to '{output_file_path}'.")
+        log.debug(f"PDF file with metadata saved to '{output_file_path}'.")
 
     def add_metadata_to_file(self, file_path: str, pdf_metadata: dict) -> None:
         """
@@ -82,7 +83,7 @@ class LocalClient:
         # Save the file with metadata
         pdf_writer.write()
 
-        print(f"Metadata added to file '{file_path}'.")
+        log.debug(f"Metadata added to file '{file_path}'.")
 
     def get_metadata_from_file(self, file_path: str) -> dict:
         """
@@ -153,10 +154,10 @@ class LocalClient:
                 with open(file_path, 'wb') as pdf_output:
                     pdf_writer.write(pdf_output)
 
-                print(f"Metadata changed for file '{file_path}'.")
+                log.debug(f"Metadata changed for file '{file_path}'.")
                 return
 
-        print(f"File with name '{file_name}' not found in the base directory.")
+        log.debug(f"File with name '{file_name}' not found in the base directory.")
 
     def delete_file(self, file_path: str) -> None:
         """
@@ -168,7 +169,7 @@ class LocalClient:
             os.remove(file_path)
         except Exception as e:
             # Handle any exceptions that may occur during the force delete.
-            print(f"Error: {str(e)}")
+            log.error(f"Error: {str(e)}")
 
     def delete_fuse_hidden_files(self, directory_path: str) -> None:
         """
@@ -181,10 +182,10 @@ class LocalClient:
                 if filename.startswith('.fuse_hidden'):
                     file_path = os.path.join(directory_path, filename)
                     os.remove(file_path)
-                    print(f"Deleted: {file_path}")
-            print("Finished deleting .fuse_hidden files.")
+                    log.debug(f"Deleted: {file_path}")
+            log.debug("Finished deleting .fuse_hidden files.")
         except Exception as e:
-            print(f"An error occurred: {str(e)}")
+            log.error(f"An error occurred: {str(e)}")
 
     def copy_file(self, source_path: str, destination_path: str) -> None:
         """
@@ -200,10 +201,10 @@ class LocalClient:
                 os.makedirs(dest_dir)
 
             shutil.copy2(source_path, destination_path)
-            print(f"File copied from '{source_path}' to '{destination_path}' successfully.")
+            log.debug(f"File copied from '{source_path}' to '{destination_path}' successfully.")
         except Exception as e:
             # Handle any exceptions that may occur during the copy process.
-            print(f"Error: {str(e)}")
+            log.error(f"Error: {str(e)}")
 
     def change_file_name(self, current_path: str, new_name: str) -> None:
         """
@@ -215,7 +216,7 @@ class LocalClient:
         try:
             # Check if the file exists at the current path.
             if not os.path.exists(current_path):
-                print(f"File '{current_path}' does not exist.")
+                log.debug(f"File '{current_path}' does not exist.")
                 return
 
             # Get the directory of the current file and create a new path with the new name.
@@ -225,10 +226,10 @@ class LocalClient:
             # Rename the file to the new name.
             os.rename(current_path, new_path)
 
-            print(f"File '{current_path}' renamed to '{new_name}' successfully.")
+            (f"File '{current_path}' renamed to '{new_name}' successfully.")
         except Exception as e:
             # Handle any exceptions that may occur during the renaming process.
-            print(f"Error: {str(e)}")
+            log.error(f"Error: {str(e)}")
 
 def main():
     # Initialize the PDF metadata manager

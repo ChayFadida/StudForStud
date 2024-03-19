@@ -12,7 +12,7 @@ class HandleData:
         """
         self.file_client = file_client
 
-    def upload_test(self, file_content: bytes, course_code: str, semester: str, grade: str, notes: str, lecturer: str, exam_type: str) -> None:
+    def upload_test(self, file_content: bytes, course_code: str, semester: str, grade: str, notes: str, lecturer: str, exam_type: str) -> str:
         """
         Upload a test file with associated metadata.
 
@@ -42,6 +42,7 @@ class HandleData:
         self.file_client.write_file_with_metadata(temp_file_path, file_name, metadata)
         # Clean up the temporary file
         os.remove(temp_file_path)
+        return file_name
 
     
 
@@ -106,7 +107,7 @@ class HandleData:
         data = {'table_data': table_data, 'exam_dates': generate_years_array(), 'moed_dict': {value: key for key, value in moded_dict.items()}}
         return data
 
-    def edit_data(self, semester: str, grade: str, course_code: str, notes: str, exam_type: str, lecturer: str, file_name: str) -> None:
+    def edit_data(self, semester: str, grade: str, course_code: str, notes: str, exam_type: str, lecturer: str, file_name: str) -> str:
         """
         Edit the metadata of an existing test file.
 
@@ -131,6 +132,6 @@ class HandleData:
         self.file_client.change_file_name(original_file_path, file_name)
         metadata = self.generate_json_metadata(course_code, semester, grade, notes, lecturer, exam_type, file_name, current_metadata['/id'])
         self.file_client.change_metadata_by_name(file_name, metadata)
-        return None
+        return file_name
         
 

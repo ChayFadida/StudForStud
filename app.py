@@ -3,9 +3,9 @@ from flask import Flask, render_template
 from werkzeug.middleware.proxy_fix import ProxyFix
 from routes import edit, upload, serve_file, metrics
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from prometheus_client import make_wsgi_app
 from flask_prometheus_metrics import register_metrics
 from config.app_contex import app_version, app_environment
+
 app = Flask(__name__)
 
 # Add the following lines to configure the static folder
@@ -35,7 +35,7 @@ def index():
     return render_template('index.html', data=data)
 
 # Create a DispatcherMiddleware to combine your Flask app and the Prometheus metrics endpoint
-dispatcher = DispatcherMiddleware(app.wsgi_app, {"/metrics": make_wsgi_app()})
+dispatcher = DispatcherMiddleware(app.wsgi_app)
 
 if __name__ == '__main__':
     from werkzeug.serving import run_simple

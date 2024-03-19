@@ -2,6 +2,8 @@ from helpers.mega_client import MegaClient
 from datetime import datetime
 from config.app_contex import backup_cloud_username, backup_cloud_password, backup_dir
 import os
+from config.logger_config import log
+
 
 class BackupManager:
     def __init__(self, mega_email, mega_password):
@@ -31,10 +33,10 @@ class BackupManager:
         if backup_files:
             file_name = max(backup_files)
             full_path = os.path.join(directory, file_name)
-            print(f"The latest backup file is: {full_path}")
+            log.info(f"The latest backup file is: {full_path}")
             return full_path, file_name
         else:
-            print("No backup files found.")
+            log.info("No backup files found.")
             return None
 
     def create_backup(self, directory):
@@ -59,8 +61,9 @@ class BackupManager:
 
             # Upload the latest backup file to Mega
             self.mega_client.upload_file(latest_backup_path, current_date_string, file_name)
+            log.info("backup just created")
         else:
-            print("Backup creation failed. No backup files found.")
+            log.error("Backup creation failed. No backup files found.")
 
 if __name__ == '__main__':
     backupManager = BackupManager(backup_cloud_username, backup_cloud_password)
