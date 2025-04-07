@@ -7,7 +7,7 @@ Welcome to StudForStud, a web application designed to facilitate students in sha
 Follow these instructions to get the StudForStud application up and running on your system.
 
 ### Prerequisites
-
+ 
 Before you begin, make sure you have the following software installed on your system:
 
 - [Docker](https://docs.docker.com/get-docker/)
